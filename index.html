@@ -913,12 +913,12 @@
     if (months.includes(dashCur)) dashSel.value = dashCur;
     else if (latestMonth) dashSel.value = latestMonth;
 
-    // ランキングタブ：全期間あり
+    // 個別タブ：全期間なし・最新月をデフォルト
     const rankSel = document.getElementById('rank-month');
     const rankCur = rankSel.value;
-    rankSel.innerHTML = '<option value="">全期間</option>' +
-      months.map(m => `<option value="${m}">${m.replace('-','年')}月`).join('');
+    rankSel.innerHTML = months.map(m => `<option value="${m}">${m.replace('-','年')}月`).join('');
     if (months.includes(rankCur)) rankSel.value = rankCur;
+    else if (latestMonth) rankSel.value = latestMonth;
   };
 
   window.showMsg = function(id, text, ok) {
@@ -1055,7 +1055,7 @@
       const totalP = staffData.reduce((s,d) => s+d.customers, 0);
       const avgFam = totalC > 0 ? (totalP/totalC).toFixed(2) : '—';
 
-      const displayMonths = isExpanded ? allMonths : recentMonths;
+      const displayMonths = isExpanded ? [...allMonths].reverse() : [...recentMonths].reverse();
       const hasOlderData = allMonths.length > 3;
 
       const rows = displayMonths.map(m => {
@@ -1087,20 +1087,6 @@
             <div style="display:flex;align-items:center;gap:8px">
               ${toggleBtn}
               <span class="badge ${cls}">${store}</span>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:12px">
-            <div style="flex:1;background:var(--blue-xlight);border-radius:var(--radius-sm);padding:10px;text-align:center">
-              <div style="font-size:10px;color:#1d4ed8;font-weight:700;margin-bottom:4px">累計軒数</div>
-              <div style="font-size:20px;font-weight:800;color:#1d4ed8">${totalC}</div>
-            </div>
-            <div style="flex:1;background:var(--orange-xlight);border-radius:var(--radius-sm);padding:10px;text-align:center">
-              <div style="font-size:10px;color:#ea580c;font-weight:700;margin-bottom:4px">累計人数</div>
-              <div style="font-size:20px;font-weight:800;color:#ea580c">${totalP}</div>
-            </div>
-            <div style="flex:1;background:#fff7ed;border:1px solid #ffedd5;border-radius:var(--radius-sm);padding:10px;text-align:center">
-              <div style="font-size:10px;color:#9a3412;font-weight:700;margin-bottom:4px">平均家族</div>
-              <div style="font-size:20px;font-weight:800;color:#9a3412">${avgFam}</div>
             </div>
           </div>
           ${rows ? `
